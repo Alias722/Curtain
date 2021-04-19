@@ -25,7 +25,7 @@ express().post('/webhook',app)
 express().get('*',(req,res)=>{
 	res.redirect(302,'/')
 })
-express().app.listen(port,()=>{
+express().listen(port,()=>{
 	console.log("Server running on port "+port)
 })
 
