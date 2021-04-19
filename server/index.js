@@ -1,12 +1,22 @@
 const express = require('express')
+const {
+	dialogflow,
+	actionssdk,
+	Image,
+	Table,
+	Carousel
+} = require('actions-on-google')
 
 const port = 21434
-const app = express()
 
-app.get('/',(req,res)=>{
+const app = dialogflow({
+	debug: true
+})
+
+express().get('/',(req,res)=>{
 	res.sendStatus(200);
 })
 
-app.listen(port,()=>{
+express().app.listen(port,()=>{
 	console.log("Server running on port "+port)
 })
