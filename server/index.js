@@ -13,7 +13,6 @@ const app = dialogflow({
 	debug: true
 })
 
-
 //If recieved GET request to '/'
 //return good
 //Any request to /webhook
@@ -21,16 +20,17 @@ const app = dialogflow({
 expressapp.get('/',(req,res)=>{
 	res.sendStatus(200);
 })
+
 //express().use(bodyParser.json())
-expressapp.post('/webhook',bodyParser,app)
+expressapp.post('/webhook',app)
 
 app.intent('intent_name',(conv)=>{
 	conv.ask('How are you?')
 })
 
-expressapp('*',(req,res)=>{
-	res.redirect(302,'/')
-})
+//expressapp('*',(req,res)=>{
+//	res.redirect(302,'/')
+//})
 
 
 
