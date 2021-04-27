@@ -24,8 +24,21 @@ expressapp.get('/',(req,res)=>{
 //express().use(bodyParser.json())
 expressapp.post('/webhook',app)
 
-app.intent('intent_name',(conv)=>{
-	conv.ask('How are you?')
+app.intent('Default Welcome Intent',(conv)=>{
+	conv.ask("Is it good to it?")
+})
+
+app.intent('bye',(conv)=>{
+	conv.close('See you later!')
+})
+
+app.catch((conv,error)=>{
+	console.log(error)
+	conv.ask('Wow a big glitch. Maybe I will check it later')
+})
+
+app.fallback((conv)=>{
+	conv.ask('I don\'t really get what you said.')
 })
 
 //expressapp('*',(req,res)=>{
