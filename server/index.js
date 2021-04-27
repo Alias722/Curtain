@@ -22,14 +22,18 @@ expressapp.get('/',(req,res)=>{
 })
 
 //express().use(bodyParser.json())
-expressapp.post('/webhook',app)
+expressapp.post('/webhook',bodyParser.json(),app)
 
 app.intent('Default Welcome Intent',(conv)=>{
 	conv.ask("Is it good to it?")
 })
 
-app.intent('bye',(conv)=>{
-	conv.close('See you later!')
+app.intent('open the curtain',(conv)=>{
+	conv.ask('opening the curtain')
+})
+
+app.intent('close the curtain',(conv)=>{
+	conv.ask('closing the curtain')
 })
 
 app.catch((conv,error)=>{
