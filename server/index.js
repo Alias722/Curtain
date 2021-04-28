@@ -7,6 +7,10 @@ const {
 	Carousel
 } = require('actions-on-google')
 const bodyParser = require('body-parser')
+const crypto = require('crypto')
+const shell = require('shelljs')
+
+const config = require('./config.json')
 const port = 21434
 const expressapp = express()
 const app = dialogflow({
@@ -21,7 +25,8 @@ expressapp.get('/',(req,res)=>{
 	res.sendStatus(200);
 })
 
-//express().use(bodyParser.json())
+//if route == //webhook
+//throw file to dialogflow(app)
 expressapp.post('/webhook',bodyParser.json(),app)
 
 app.intent('Default Welcome Intent',(conv)=>{
@@ -29,11 +34,27 @@ app.intent('Default Welcome Intent',(conv)=>{
 })
 
 app.intent('open the curtain',(conv)=>{
-	conv.ask('opening the curtain')
+	if(conv['user']['raw']['userVerificationStatus'] == "VERIFIED"){
+		let hashsum = crypto.createHash('sha256').update(conv.user['storage']).digest('base64')
+		if(hashsum == config['hashsum']){
+			shell.exec('./script/open.sh')
+			conv.ask('opening the curtain')
+		}else{
+			conv.ask("permission deny")
+		}
+	}
 })
 
 app.intent('close the curtain',(conv)=>{
-	conv.ask('closing the curtain')
+	if(conv['user']['raw']['userVerificationStatus'] == "VERIFIED"){
+		let hashsum = crypto.createHash('sha256').update(conv.user['storage']).digest('base64')
+		if(hashsum == config['hashsum']){
+			shell.exec('./script/close.sh')
+			conv.ask('closing the curtain')
+		}else{
+			conv.ask("permission deny")
+		}
+	}
 })
 
 app.catch((conv,error)=>{
@@ -42,14 +63,12 @@ app.catch((conv,error)=>{
 })
 
 app.fallback((conv)=>{
-	conv.ask('I don\'t really get what you said.')
+	if(conv.query == "GOOGLE_ASSISTANT_WELCOME"){
+		conv.ask("Hello there")
+	}else{
+		conv.ask("I don't really get what you said")
+	}
 })
-
-//expressapp('*',(req,res)=>{
-//	res.redirect(302,'/')
-//})
-
-
 
 expressapp.listen(port,()=>{
 	console.log("Server running on port "+port)
