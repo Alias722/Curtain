@@ -1,1 +1,2 @@
-/server/config.json
+/server/node_modules/
+/server/package_lock.json
